@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>计算题练习</title>
+
+  <!-- 定义页面样式 -->
+  <style>
+    /* 设置页面字体和背景颜色 */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    /* 设置按钮区域的样式 */
+    #buttons {
+      text-align: center;
+      border: none;
+      border-collapse: collapse;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 设置按钮和下拉菜单的样式 */
+    button,
+    select {
+      padding: 10px;
+      border-radius: 10px;
+      margin: 20px;
+      background-color: #2c3e50;
+      color: #fff;
+      border: none;
+      width: 120px;
+      text-align: center;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    /* 设置按钮和下拉菜单悬停时的样式 */
+    button:hover,
+    select:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 设置下拉菜单的样式 */
+    select {
+      background-color: #34495e;
+      color: #fff;
+    }
+
+    /* 设置题目表格的样式 */
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 设置单元格的样式 */
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+      line-height: 1.3;
+      transition: all 0.3s ease;
+    }
+
+    /* 设置单元格悬停时的样式 */
+    td:hover {
+      background-color: #f2f2f2;
+    }
+
+    /* 隐藏元素 */
+    .hidden {
+      display: none;
+    }
+
+    /* 设置学生答题输入框的样式 */
+    .answer-input {
+      border: none;
+      outline: none;
+      border-bottom: 1px solid #ccc;
+      width: 16px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    /* 移除输入框的旋转按钮 */
+    .answer-input::-webkit-inner-spin-button,
+    .answer-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* 设置结果输入框的样式 */
+    .result-input {
+      padding: 10px;
+      border-radius: 10px;
+      margin: 20px;
+      background-color: #2c3e50;
+      color: #fff;
+      border: none;
+      width: 120px;
+      text-align: center;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    /* 设置结果输入框悬停时的样式 */
+    .result-input:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 设置批改按钮的样式 */
+    .check-button {
+      padding: 10px;
+      border-radius: 10px;
+      margin: 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      width: 120px;
+      text-align: center;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    /* 设置批改按钮悬停时的样式 */
+    .check-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 设置无边无格的表格样式,用于布局 */
+    .invisible-table-borderless {
+      border: none;
+      background-color: transparent;
+      height: 10;
+    }
+
+    .invisible-table-borderless tr {
+      border: none;
+      background-color: transparent;
+    }
+
+    .invisible-table-borderless td {
+      border: none;
+      background-color: transparent;
+      text-align: center;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- 按钮区域 -->
+  <div id="buttons">
+
+    <!-- 使用无边无格表格布局 -->
+    <table class="invisible-table-borderless" border="0">
+
+      <tr>
+
+        <td style="font-weight: bold;">题目类型<br>
+
+          <!-- 题型选择下拉菜单 -->
+          <select id="operationSelect">
+            <option value="random">A、 加减随机</option>
+            <option value="add">B、 加法运算</option>
+            <option value="subtract">C、 减法运算</option>
+            <option value="randomAdd">D、 乱序加法</option>
+            <option value="randomSubtract">E、 乱序减法</option>
+            <option value="randomMixed">F、 乱序随机</option>
+            <option value="continuousAdd">G、 连加运算</option>
+            <option value="continuousSubtract">H、 连减运算</option>
+            <option value="hybrid">I、 混合运算</option>
+          </select>
+
+        </td>
+
+        <td style="font-weight: bold;">计算范围<br>
+
+          <!-- 最大值输入框 -->
+          <input type="number" id="maxValue" class="result-input" placeholder="输入数字" value="10">
+
+        </td>
+
+        <td style="font-weight: bold;">生成题目数量<br>
+
+          <!-- 题目数量选择下拉菜单 -->
+          <select id="questionQuantitySelect">
+            <option value="30">30</option>
+            <option value="60">60</option>
+            <option value="120">120</option>
+            <option value="other">其他</option>
+          </select>
+
+        </td>
+
+        <td>
+
+          <!-- 打印按钮 -->
+          <button onclick="printQuestions()" class="result-input">打 印 题 目</button><br>
+
+          <!-- 生成按钮 -->
+          <button onclick="generateQuestions()" class="result-input">生 成 题 目</button>
+
+        </td>
+
+        <td>
+
+          <!-- 批改按钮 -->
+          <button onclick="checkAnswers()" class="check-button">批 改</button><br>
+
+          <!-- 累计生成按钮 -->
+          <button onclick="accumulateQuestions()" class="result-input">累 计 生 成</button>
+
+        </td>
+
+      </tr>
+
+    </table>
+
+  </div>
+
+  <!-- 题目表格 -->
+  <table id="questions"></table>
+
+  <script>
+
+    // 默认最大值
+    var maxValue = 100;
+
+    // 生成题目
+    function generateQuestions() {
+
+      // 获取题目表格
+      var table = document.getElementById("questions");
+      table.innerHTML = "";
+
+      // 获取选择的题型
+      var operation = document.getElementById("operationSelect").value;
+
+      // 获取最大值输入
+      var maxValueInput = parseInt(document.getElementById("maxValue").value);
+      maxValue = Math.max(maxValueInput, 0);
+
+      // 获取题目数量  
+      var questionQuantity = getQuestionQuantity();
+
+      // 根据不同题型生成题目
+      if (operation === "hybrid") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateHybridQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else if (operation === "continuousAdd") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateContinuousAddQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else if (operation === "continuousSubtract") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateContinuousSubtractQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else {
+        for (var i = 0; i < Math.ceil(questionQuantity / 5); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 5; j++) {
+            var cell = row.insertCell();
+            var question = generateQuestion(operation);
+
+            // 根据运算生成题目和结果
+            var result;
+            switch (operation) {
+              case "add":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 + num2;
+                while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 + num2;
+                }
+                question = num1 + " + " + num2 + " =";
+                break;
+              case "subtract":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 - num2;
+                while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 - num2;
+                }
+                question = num1 + " - " + num2 + " =";
+                break;
+              case "randomAdd":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 + num2;
+                while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 + num2;
+                }
+                question = getRandomPosition(num1, num2, result, "+");
+                break;
+              case "randomSubtract":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 - num2;
+                while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 - num2;
+                }
+                question = getRandomPosition(num1, num2, result, "-");
+                break;
+              case "randomMixed":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                var operator = Math.random() < 0.5 ? "+" : "-";
+                if (operator === "+") {
+                  result = num1 + num2;
+                  while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 + num2;
+                  }
+                  question = getRandomPosition(num1, num2, result, "+");
+                } else {
+                  result = num1 - num2;
+                  while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 - num2;
+                  }
+                  question = getRandomPosition(num1, num2, result, "-");
+                }
+                break;
+              case "random":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                var operator = Math.random() < 0.5 ? "+" : "-";
+                if (operator === "+") {
+                  result = num1 + num2;
+                  while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 + num2;
+                  }
+                  question = num1 + " + " + num2 + " =";
+                } else {
+                  result = num1 - num2;
+                  while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 - num2;
+                  }
+                  question = num1 + " - " + num2 + " =";
+                }
+                break;
+              default:
+                result = '';
+                break;
+            }
+
+            // 在单元格显示题目
+            cell.innerHTML = question;
+
+            // 如果不是乱序题,显示学生答题输入框
+            if (operation !== "randomAdd" && operation !== "randomSubtract" && operation !== "randomMixed") {
+              cell.innerHTML += ' <input type="number" class="answer-input" data-answer="' + result + '">';
+            }
+
+          }
+        }
+      }
+
+    }
+
+    // 累加生成题目
+    function accumulateQuestions() {
+
+      // 获取题目数量
+      var questionQuantity = getQuestionQuantity();
+
+      // 获取题目表格 
+      var table = document.getElementById("questions");
+
+      // 获取选择的题型  
+      var operation = document.getElementById("operationSelect").value;
+
+      // 获取最大值输入
+      var maxValueInput = parseInt(document.getElementById("maxValue").value);
+      maxValue = Math.max(maxValueInput, 0);
+
+      // 根据不同题型逐次生成题目  
+      if (operation === "hybrid") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateHybridQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else if (operation === "continuousAdd") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateContinuousAddQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else if (operation === "continuousSubtract") {
+        for (var i = 0; i < Math.ceil(questionQuantity / 4); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 4; j++) {
+            var cell = row.insertCell();
+            var question = generateContinuousSubtractQuestion();
+            cell.innerHTML = question;
+          }
+        }
+      } else {
+        for (var i = 0; i < Math.ceil(questionQuantity / 5); i++) {
+          var row = table.insertRow();
+          for (var j = 0; j < 5; j++) {
+            var cell = row.insertCell();
+            var question = generateQuestion(operation);
+
+            // 根据运算生成题目和结果
+            var result;
+            switch (operation) {
+              case "add":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 + num2;
+                while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 + num2;
+                }
+                question = num1 + " + " + num2 + " =";
+                break;
+              case "subtract":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 - num2;
+                while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 - num2;
+                }
+                question = num1 + " - " + num2 + " =";
+                break;
+              case "randomAdd":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 + num2;
+                while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 + num2;
+                }
+                question = getRandomPosition(num1, num2, result, "+");
+                break;
+              case "randomSubtract":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                result = num1 - num2;
+                while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                  num1 = getRandomNumber();
+                  num2 = getRandomNumber();
+                  result = num1 - num2;
+                }
+                question = getRandomPosition(num1, num2, result, "-");
+                break;
+              case "randomMixed":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                var operator = Math.random() < 0.5 ? "+" : "-";
+                if (operator === "+") {
+                  result = num1 + num2;
+                  while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 + num2;
+                  }
+                  question = getRandomPosition(num1, num2, result, "+");
+                } else {
+                  result = num1 - num2;
+                  while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 - num2;
+                  }
+                  question = getRandomPosition(num1, num2, result, "-");
+                }
+                break;
+              case "random":
+                var num1 = getRandomNumber();
+                var num2 = getRandomNumber();
+                var operator = Math.random() < 0.5 ? "+" : "-";
+                if (operator === "+") {
+                  result = num1 + num2;
+                  while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 + num2;
+                  }
+                  question = num1 + " + " + num2 + " =";
+                } else {
+                  result = num1 - num2;
+                  while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 - num2;
+                  }
+                  question = num1 + " - " + num2 + " =";
+                }
+                break;
+              default:
+                result = '';
+                break;
+            }
+
+            // 在单元格显示题目  
+            cell.innerHTML = question;
+
+            // 如果不是乱序题,显示学生答题输入框
+            if (operation !== "randomAdd" && operation !== "randomSubtract" && operation !== "randomMixed") {
+              cell.innerHTML += ' <input type="number" class="answer-input" data-answer="' + result + '">';
+            }
+
+          }
+        }
+      }
+
+    }
+
+    // 打印题目
+    function printQuestions() {
+
+      // 获取按钮区域和题目表格
+      var buttons = document.getElementById("buttons");
+      var table = document.getElementById("questions");
+
+      // 获取学生答题输入
+      var userAnswers = [];
+
+      for (var i = 0; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        for (var j = 0; j < row.cells.length; j++) {
+          var cell = row.cells[j];
+          var input = cell.querySelector("input");
+          userAnswers.push(input.value);
+        }
+      }
+
+      // 隐藏不需要打印的内容
+      buttons.style.display = "none";
+      var images = table.getElementsByTagName("img");
+      for (var i = 0; i < images.length; i++) {
+        images[i].style.display = "none";
+      }
+
+      var operationSelect = document.getElementById("operationSelect");
+      var selectedOperation = operationSelect.value;
+      if (selectedOperation !== "randomAdd" && selectedOperation !== "randomSubtract" && selectedOperation !== "randomMixed") {
+        for (var i = 0; i < table.rows.length; i++) {
+          var row = table.rows[i];
+          for (var j = 0; j < row.cells.length; j++) {
+            var cell = row.cells[j];
+            var input = cell.querySelector("input");
+            input.style.display = "none";
+          }
+        }
+      }
+
+      // 打印页面
+      window.print();
+
+      // 恢复页面
+      buttons.style.display = "block";
+      for (var i = 0; i < images.length; i++) {
+        images[i].style.display = "block";
+      }
+
+      if (selectedOperation !== "randomAdd" && selectedOperation !== "randomSubtract" && selectedOperation !== "randomMixed") {
+        for (var i = 0; i < table.rows.length; i++) {
+          var row = table.rows[i];
+          for (var j = 0; j < row.cells.length; j++) {
+            var cell = row.cells[j];
+            var input = cell.querySelector("input");
+            input.style.display = "block";
+          }
+        }
+      }
+    }
+
+    // 批改题目
+    function checkAnswers() {
+
+      // 获取题目表格
+      var table = document.getElementById("questions");
+
+      // 逐题检查
+      for (var i = 0; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        for (var j = 0; j < row.cells.length; j++) {
+          var cell = row.cells[j];
+          var input = cell.querySelector("input");
+
+          // 如果单元格有学生输入框
+          if (input) {
+
+            // 获取学生输入
+            var userAnswer = input.value;
+
+            // 获取正确答案
+            var correctAnswer = input.getAttribute("data-answer");
+
+            // 检查对错并显示对应提示图标
+            if (userAnswer == correctAnswer) {
+              // 在“正确”图片前加空格
+              cell.innerHTML += '　';
+              var img = document.createElement("img");
+              img.src = "111.png";
+              img.width = 19;
+              img.height = 20;
+              cell.appendChild(img);
+            } else {
+              // 在“错误”图片前加空格
+              cell.innerHTML += '　';
+              var img = document.createElement("img");
+              img.src = "222.png";
+              img.width = 19;
+              img.height = 20;
+              cell.appendChild(img);
+            }
+          }
+        }
+      }
+    }
+
+    // 生成指定范围随机数
+    function getRandomNumber() {
+      let num;
+      do {
+        num = Math.floor(Math.random() * maxValue) + 1;
+      } while (num === 0);
+      return num;
+    }
+
+    // 生成指定题型的题目
+    function generateQuestion(operation) {
+      var num1 = getRandomNumber();
+      var num2 = getRandomNumber();
+      var result;
+      switch (operation) {
+        case "add":
+          result = num1 + num2;
+          while (result > maxValue) {
+            num1 = getRandomNumber();
+            num2 = getRandomNumber();
+            result = num1 + num2;
+          }
+          return num1 + " + " + num2 + " =";
+        case "subtract":
+          num1 = getRandomNumber();
+          num2 = getRandomNumber();
+          result = num1 - num2;
+          while (result < 0 || result > maxValue) {
+            num1 = getRandomNumber();
+            num2 = getRandomNumber();
+            result = num1 - num2;
+          }
+          return num1 + " - " + num2 + " =";
+        case "randomAdd":
+          var num1 = getRandomNumber();
+          var num2 = getRandomNumber();
+          result = num1 + num2;
+          while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+            num1 = getRandomNumber();
+            num2 = getRandomNumber();
+            result = num1 + num2;
+          }
+          return getRandomPosition(num1, num2, result, "+");
+        case "randomSubtract":
+          var num1 = getRandomNumber();
+          var num2 = getRandomNumber();
+          result = num1 - num2;
+          while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+            num1 = getRandomNumber();
+            num2 = getRandomNumber();
+            result = num1 - num2;
+          }
+          return getRandomPosition(num1, num2, result, "-");
+        case "randomMixed":
+          var num1 = getRandomNumber();
+          var num2 = getRandomNumber();
+          var operator = Math.random() < 0.5 ? "+" : "-";
+          if (operator === "+") {
+            result = num1 + num2;
+            while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+              num1 = getRandomNumber();
+              num2 = getRandomNumber();
+              result = num1 + num2;
+            }
+            return getRandomPosition(num1, num2, result, "+");
+          } else {
+            result = num1 - num2;
+            while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+              num1 = getRandomNumber();
+              num2 = getRandomNumber();
+              result = num1 - num2;
+            }
+            return getRandomPosition(num1, num2, result, "-");
+          }
+        case "random":
+          var num1 = getRandomNumber();
+          var num2 = getRandomNumber();
+          var operator = Math.random() < 0.5 ? "+" : "-";
+          if (operator === "+") {
+            result = num1 + num2;
+            while (num1 > maxValue || num2 > maxValue || result > maxValue) {
+              num1 = getRandomNumber();
+              num2 = getRandomNumber();
+              result = num1 + num2;
+            }
+            return num1 + " + " + num2 + " =";
+          } else {
+            result = num1 - num2;
+            while (num1 > maxValue || num2 > maxValue || result < 0 || result > maxValue) {
+              num1 = getRandomNumber();
+              num2 = getRandomNumber();
+              result = num1 - num2;
+            }
+            return num1 + " - " + num2 + " =";
+          }
+        default:
+          return "";
+      }
+    }
+
+    // 生成乱序题目
+    function getRandomPosition(num1, num2, result, operator) {
+      var random = Math.random();
+      if (operator === "+") {
+        if (random < 0.5) {
+          return '<input type="number" class="answer-input" data-answer="' + num1 + '"> + ' + num2 + ' = ' + result;
+        } else  {
+          return num1 + ' + <input type="number" class="answer-input" data-answer="' + num2 + '"> = ' + result;
+        } 
+      } else if (operator == "-") {
+        if (random < 0.5) {
+          return '<input type="number" class="answer-input" data-answer="' + num1 + '"> - ' + num2 + ' = ' + result;
+        } else  {
+          return num1 + ' - <input type="number" class="answer-input" data-answer="' + num2 + '"> = ' + result;
+        } 
+      } else {
+        return '';
+      }
+    }
+
+    // 获取需要生成的题目数量
+    function getQuestionQuantity() {
+      var quantitySelect = document.getElementById("questionQuantitySelect");
+      var selectedValue = quantitySelect.value;
+
+      if (selectedValue === "other") {
+        var customQuantity = parseInt(prompt("“连加”、“连减”和“混合运算”一页A4纸可打印 96 题,\n其他题型一页可打印 120 题。\n双面打印请选择96或者120的偶数倍数。\n请输入需要生成的题目数量:", "10"));
+        return isNaN(customQuantity) ? 30 : customQuantity;
+      }
+      return parseInt(selectedValue);
+    }
+
+    // 生成混合运算题
+    function generateHybridQuestion() {
+      var num1 = getRandomNumber();
+      var num2 = getRandomNumber();
+      var num3 = getRandomNumber();
+      var operator1 = Math.random() < 0.5 ? "+" : "-";
+      var operator2 = Math.random() < 0.5 ? "+" : "-";
+      var result;
+
+      if (operator1 === "+") {
+        if (operator2 === "+") {
+          result = num1 + num2 + num3;
+        } else {
+          result = num1 + num2 - num3;
+        }
+      } else {
+        if (operator2 === "+") {
+          result = num1 - num2 + num3;
+        } else {
+          result = num1 - num2 - num3;
+        }
+      }
+
+      while (num1 > maxValue || num2 > maxValue || num3 > maxValue || result > maxValue || result < 0) {
+        num1 = getRandomNumber();
+        num2 = getRandomNumber();
+        num3 = getRandomNumber();
+        operator1 = Math.random() < 0.5 ? "+" : "-";
+        operator2 = Math.random() < 0.5 ? "+" : "-";
+        if (operator1 === "+") {
+          if (operator2 === "+") {
+            result = num1 + num2 + num3;
+          } else {
+            result = num1 + num2 - num3;
+          }
+        } else {
+          if (operator2 === "+") {
+            result = num1 - num2 + num3;
+          } else {
+            result = num1 - num2 - num3;
+          }
+        }
+      }
+
+      return num1 + ' ' + operator1 + ' ' + num2 + ' ' + operator2 + ' ' + num3 + ' = <input type="number" class="answer-input" data-answer="' + result + '">';
+    }
+
+    // 生成连加题
+    function generateContinuousAddQuestion() {
+      var nums = [];
+      var result = 0;
+      for (var i = 0; i < 3; i++) {
+        var num = getRandomNumber();
+        while (num > maxValue) {
+          num = getRandomNumber();
+        }
+        nums.push(num);
+        result += num;
+      }
+      while (result > maxValue) {
+        result = 0;
+        nums = [];
+        for (var i = 0; i < 3; i++) {
+          var num = getRandomNumber();
+          while (num > maxValue) {
+            num = getRandomNumber();
+          }
+          nums.push(num);
+          result += num;
+        }
+      }
+      return nums[0] + " + " + nums[1] + " + " + nums[2] + " = <input type='number' class='answer-input' data-answer='" + result + "'>";
+    }
+
+    // 生成连减题 
+    function generateContinuousSubtractQuestion() {
+      var nums = [];
+      var result;
+      for (var i = 0; i < 4; i++) {
+        var num = getRandomNumber();
+        while (num > maxValue) {
+          num = getRandomNumber();
+        }
+        nums.push(num);
+        if (i == 0) {
+          result = num;
+        } else {
+          result -= num;
+        }
+      }
+      while (result < 0 || result > maxValue) {
+        result = 0;
+        nums = [];
+        for (var i = 0; i < 4; i++) {
+          var num = getRandomNumber();
+          while (num > maxValue) {
+            num = getRandomNumber();
+          }
+          nums.push(num);
+          if (i == 0) {
+            result = num;
+          } else {
+            result -= num;
+          }
+        }
+      }
+      return nums[0] + " - " + nums[1] + " - " + nums[2] + " = <input type='number' class='answer-input' data-answer='" + result + "'>";
+    }
+
+  </script>
+
+</body>
+
+</html>
